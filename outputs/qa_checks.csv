@@ -1,0 +1,7 @@
+check,status,details
+unique_request_id,PASS,Every synthetic request_id is unique
+unique_task_id,PASS,Every synthetic task_id is unique
+usage_task_relationship,PASS,Each AI request references a known task
+cached_tokens_bound,PASS,Cached input tokens do not exceed input tokens
+nonnegative_cost,PASS,Calculated request costs are nonnegative
+quality_score_range,PASS,Quality scores remain between zero and one
