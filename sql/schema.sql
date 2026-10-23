@@ -1,0 +1,10 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS dim_team (team_id TEXT PRIMARY KEY, team_name TEXT NOT NULL, primary_output TEXT, primary_kpi TEXT, loaded_labor_rate_inr_per_hour REAL, description TEXT);
+CREATE TABLE IF NOT EXISTS dim_model_pricing (model_id TEXT PRIMARY KEY, model_name TEXT, provider TEXT, effective_start TEXT, effective_end TEXT, input_price_usd_per_million REAL, output_price_usd_per_million REAL, cached_input_price_usd_per_million REAL, currency TEXT);
+CREATE TABLE IF NOT EXISTS dim_date (date_key TEXT PRIMARY KEY, date TEXT, year INTEGER, quarter TEXT, month_number INTEGER, month_name TEXT, week_number INTEGER, day_name TEXT);
+CREATE TABLE IF NOT EXISTS dim_task_type (task_type TEXT, team_name TEXT, PRIMARY KEY(task_type,team_name));
+CREATE TABLE IF NOT EXISTS fact_work_outcome (task_id TEXT PRIMARY KEY, task_date TEXT, team_id TEXT NOT NULL, task_type TEXT, ai_assisted INTEGER, tasks_completed INTEGER, baseline_minutes REAL, actual_minutes REAL, rework_minutes REAL, quality_score REAL, accepted INTEGER, business_output TEXT, FOREIGN KEY(team_id) REFERENCES dim_team(team_id));
+CREATE TABLE IF NOT EXISTS fact_ai_usage (request_id TEXT PRIMARY KEY, request_timestamp TEXT, task_id TEXT NOT NULL, team_id TEXT NOT NULL, model_id TEXT NOT NULL, task_type TEXT, input_tokens INTEGER, output_tokens INTEGER, cached_input_tokens INTEGER, tool_cost_usd REAL, request_status TEXT, latency_seconds REAL, usd_inr_fx REAL, api_cost_usd REAL, total_cost_usd REAL, total_cost_inr REAL, FOREIGN KEY(task_id) REFERENCES fact_work_outcome(task_id), FOREIGN KEY(team_id) REFERENCES dim_team(team_id), FOREIGN KEY(model_id) REFERENCES dim_model_pricing(model_id));
+CREATE INDEX IF NOT EXISTS ix_usage_task ON fact_ai_usage(task_id);
+CREATE INDEX IF NOT EXISTS ix_usage_team_time ON fact_ai_usage(team_id, request_timestamp);
+CREATE INDEX IF NOT EXISTS ix_outcome_team_date ON fact_work_outcome(team_id, task_date);
