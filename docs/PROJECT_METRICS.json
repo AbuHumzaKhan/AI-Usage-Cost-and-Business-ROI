@@ -1,0 +1,7 @@
+{
+  "project": "AI Usage, Token Cost & Business ROI Analytics",
+  "data_type": "synthetic",
+  "fx_usd_inr": 83.5,
+  "primary_efficiency_metric": "cost_per_accepted_ai_output_inr",
+  "roi_caveat": "Estimated capacity value is not realized cash savings; observational comparisons do not establish causality."
+}
